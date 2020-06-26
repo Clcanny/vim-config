@@ -175,6 +175,9 @@ nmap [h <Plug>(GitGutterPrevHunk)
 " let g:UltiSnipsJumpForwardTrigger='<tab>'
 " let g:UltiSnipsSnippetDirectories='$CONFIG_COMMON_HOME/snippets'
 
+Plug 'Clcanny/vim-formatter', { 'do': 'make check' }
+Plug 'junegunn/vim-easy-align'
+
 " Initialize plugin system
 call plug#end()
 
@@ -185,7 +188,6 @@ colorscheme solarized
 
 exec "source ".configDir."/common.vim"
 exec "source ".configDir."/map.vim"
-" exec "source ".configDir."/format/plugin/main.vim"
 " exec "source ".configDir."/abbreviate.vim"
 exec "source ".configDir."/buf.vim"
 " exec "source ".configDir."/gtags.vim"
