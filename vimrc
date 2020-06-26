@@ -179,6 +179,8 @@ let g:UltiSnipsEditSplit="vertical"
 Plug 'Clcanny/vim-formatter', { 'do': 'make check' }
 Plug 'junegunn/vim-easy-align'
 
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'] }
+
 " Initialize plugin system
 call plug#end()
 
