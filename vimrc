@@ -170,10 +170,11 @@ let g:gitgutter_map_keys = 0
 nmap ]h <Plug>(GitGutterNextHunk)
 nmap [h <Plug>(GitGutterPrevHunk)
 
-" Plug 'SirVer/ultisnips'
-" let g:UltiSnipsExpandTrigger='<tab>'
-" let g:UltiSnipsJumpForwardTrigger='<tab>'
-" let g:UltiSnipsSnippetDirectories='$CONFIG_COMMON_HOME/snippets'
+Plug 'SirVer/ultisnips'
+let g:UltiSnipsExpandTrigger='<tab>'
+let g:UltiSnipsJumpForwardTrigger='<tab>'
+exec "let g:UltiSnipsSnippetDirectories = ['".configDir."/snippets']"
+let g:UltiSnipsEditSplit="vertical"
 
 Plug 'Clcanny/vim-formatter', { 'do': 'make check' }
 Plug 'junegunn/vim-easy-align'
