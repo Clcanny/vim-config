@@ -13,7 +13,7 @@ function HorizontallySplitBuffer(buffer)
 endfunction
 command -nargs=1 Hbuf call HorizontallySplitBuffer(<f-args>)
 
-python << end
+python3 << end
 import vim
 
 def closeUnneccsaryBuffers():
