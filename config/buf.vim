@@ -27,4 +27,4 @@ def closeUnneccsaryBuffers():
             except Exception as e:
                 print(e)
 end
-command Cbuf :python closeUnneccsaryBuffers()
+command Cbuf :python3 closeUnneccsaryBuffers()
