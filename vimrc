@@ -1,5 +1,5 @@
 " Set environment variables.
-let rootDir = "~/Vim"
+let rootDir = "~/vim-config"
 let configDir = rootDir."/config"
 let plugDir = rootDir."/plug"
 
@@ -194,4 +194,4 @@ exec "source ".configDir."/map.vim"
 " exec "source ".configDir."/abbreviate.vim"
 exec "source ".configDir."/buf.vim"
 " exec "source ".configDir."/gtags.vim"
-" exec "source ".configDir."/tmux.vim"
+exec "source ".configDir."/tmux.vim"
