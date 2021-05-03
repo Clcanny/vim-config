@@ -1,7 +1,8 @@
 " Set environment variables.
-let rootDir = "~/vim-config"
+let rootDir = $APPDIR."/vim-config"
 let configDir = rootDir."/config"
 let plugDir = rootDir."/plug"
+let g:python3_host_prog = $APPDIR."/usr/bin/python3"
 
 " set vim runtime path
 exec "set rtp+=".rootDir
@@ -187,7 +188,7 @@ call plug#end()
 " for vim-colors-solarized
 " colorscheme must be after plug#end()
 " Please uncomment it after install
-colorscheme solarized
+" colorscheme solarized
 
 exec "source ".configDir."/common.vim"
 exec "source ".configDir."/map.vim"
