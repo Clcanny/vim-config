@@ -166,7 +166,7 @@ let g:ackprg = 'ag --vimgrep --smart-case'
 cnoreabbrev ag Ack
 
 Plug 'airblade/vim-gitgutter'
-let g:gitgutter_highlight_lines = 1
+let g:gitgutter_highlight_lines = 0
 let g:gitgutter_map_keys = 0
 nmap ]h <Plug>(GitGutterNextHunk)
 nmap [h <Plug>(GitGutterPrevHunk)
@@ -177,7 +177,7 @@ let g:UltiSnipsJumpForwardTrigger='<tab>'
 exec "let g:UltiSnipsSnippetDirectories = ['".configDir."/snippets']"
 let g:UltiSnipsEditSplit="vertical"
 
-" Plug 'Clcanny/vim-formatter', { 'do': 'make check' }
+Plug plugDir.'/vim-formatter'
 Plug 'junegunn/vim-easy-align'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'] }

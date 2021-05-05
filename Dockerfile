@@ -6,24 +6,19 @@ RUN apt-get update && apt-get install -y     \
   pkg-config m4 automake libtool-bin gettext \
   curl wget git zip unzip                    \
   libffi-dev libssl-dev zlib1g-dev rsync     \
+  python3 python3-pip                        \
   && rm -rf /var/lib/apt/lists/*
 
-COPY AppDir /AppDir
-RUN mkdir -p /tmp/app_image_ld
-RUN cp /lib/x86_64-linux-gnu/ld-2.31.so /tmp/app_image_ld/ld-2.31.so
-# RUN rsync -a /lib/x86_64-linux-gnu/ /AppDir/usr/lib/x86_64-linux-gnu/
-RUN mkdir -p /AppDir/usr/lib
-RUN rsync -a /lib/x86_64-linux-gnu/ /AppDir/usr/lib/
+RUN pip3 install --user lief
 
 RUN git clone https://github.com/neovim/neovim.git /neovim
 WORKDIR /neovim
-RUN LDFLAGS='-Wl,--dynamic-linker=/tmp/app_image_ld/ld-2.31.so' make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/usr -j$(nproc)
+RUN make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/usr -j$(nproc)
 RUN make install DESTDIR=/AppDir
 
 RUN git clone --branch 3.9 https://github.com/python/cpython.git /cpython
 WORKDIR /cpython
-RUN LDFLAGS='-Wl,--dynamic-linker=/tmp/app_image_ld/ld-2.31.so' ./configure --enable-optimizations --prefix=/usr
-# RUN LDFLAGS='-Wl,--dynamic-linker=/tmp/app_image_ld/ld-2.31.so -Wl,-rpath=$$ORIGIN/../lib/x86_64-linux-gnu' ./configure --enable-optimizations --prefix=/usr
+RUN ./configure --enable-optimizations --prefix=/usr
 RUN make -j$(nproc)
 RUN make install DESTDIR=/AppDir
 RUN /AppDir/usr/bin/python3 -m pip install pynvim \
@@ -31,12 +26,23 @@ RUN /AppDir/usr/bin/python3 -m pip install pynvim \
     beautysh==6.0.1                               \
     cmake-format==0.6.10                          \
     sqlparse==0.3.1
-# RUN yapf --style="google" --style-help > config/yapf.cfg
+RUN mkdir -p /AppDir/.vim/plug/vim-formatter/config
+RUN /AppDir/usr/bin/yapf --style="google" --style-help > /AppDir/.vim/plug/vim-formatter/config/yapf.cfg
 
+COPY AppDir /tmp/AppDir
+RUN rsync -a /tmp/AppDir/ /AppDir/
 RUN curl -fLo /AppDir/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ENV APPDIR=/AppDir
 RUN /AppDir/usr/bin/nvim -u /AppDir/.config/nvim/init.vim +PlugInstall +qall
+
+COPY patch_interp.py /patch_interp.py
+RUN mkdir -p /appimage
+RUN cp /lib/x86_64-linux-gnu/ld-2.31.so /appimage/ld-2.31.so
+RUN rsync -a /lib/x86_64-linux-gnu/ /AppDir/usr/lib/
+RUN rsync -a /usr/lib/x86_64-linux-gnu/ /AppDir/usr/lib/
+RUN /patch_interp.py /AppDir/usr/bin/nvim
+RUN /patch_interp.py /AppDir/usr/bin/python3.9
 
 WORKDIR /
 RUN wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
