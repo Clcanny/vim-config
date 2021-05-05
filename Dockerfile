@@ -1,20 +1,24 @@
 FROM debian:bullseye
+LABEL maintainer="837940593@qq.com"
+
 RUN apt-get update && apt-get install -y     \
   build-essential cmake make gcc g++         \
   pkg-config m4 automake libtool-bin gettext \
   curl wget git zip unzip                    \
-  libffi-dev libssl-dev zlib1g-dev rsync  fuse \
+  libffi-dev libssl-dev zlib1g-dev rsync     \
   && rm -rf /var/lib/apt/lists/*
 
+COPY AppDir /AppDir
 RUN mkdir -p /tmp/app_image_ld
 RUN cp /lib/x86_64-linux-gnu/ld-2.31.so /tmp/app_image_ld/ld-2.31.so
+# RUN rsync -a /lib/x86_64-linux-gnu/ /AppDir/usr/lib/x86_64-linux-gnu/
+RUN mkdir -p /AppDir/usr/lib
+RUN rsync -a /lib/x86_64-linux-gnu/ /AppDir/usr/lib/
 
 RUN git clone https://github.com/neovim/neovim.git /neovim
 WORKDIR /neovim
 RUN LDFLAGS='-Wl,--dynamic-linker=/tmp/app_image_ld/ld-2.31.so' make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/usr -j$(nproc)
 RUN make install DESTDIR=/AppDir
-
-COPY AppDir /AppDir
 
 RUN git clone --branch 3.9 https://github.com/python/cpython.git /cpython
 WORKDIR /cpython
@@ -22,14 +26,14 @@ RUN LDFLAGS='-Wl,--dynamic-linker=/tmp/app_image_ld/ld-2.31.so' ./configure --en
 # RUN LDFLAGS='-Wl,--dynamic-linker=/tmp/app_image_ld/ld-2.31.so -Wl,-rpath=$$ORIGIN/../lib/x86_64-linux-gnu' ./configure --enable-optimizations --prefix=/usr
 RUN make -j$(nproc)
 RUN make install DESTDIR=/AppDir
-# RUN rsync -a /lib/x86_64-linux-gnu/ /AppDir/usr/lib/x86_64-linux-gnu/
-RUN rsync -a /lib/x86_64-linux-gnu/ /AppDir/usr/lib/
-RUN /AppDir/usr/bin/python3 -m pip install pynvim
+RUN /AppDir/usr/bin/python3 -m pip install pynvim \
+    isort==4.3.21 yapf==0.30.0                    \
+    beautysh==6.0.1                               \
+    cmake-format==0.6.10                          \
+    sqlparse==0.3.1
+# RUN yapf --style="google" --style-help > config/yapf.cfg
 
-# RUN mkdir -p /AppDir/.config/nvim /AppDir/vim-config/plug
-# COPY init.vim /AppDir/.config/nvim/init.vim
-# COPY config /AppDir/vim-config/config
-RUN curl -fLo /AppDir/vim-config/autoload/plug.vim --create-dirs \
+RUN curl -fLo /AppDir/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ENV APPDIR=/AppDir
 RUN /AppDir/usr/bin/nvim -u /AppDir/.config/nvim/init.vim +PlugInstall +qall

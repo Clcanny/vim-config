@@ -1,5 +1,5 @@
 " Set environment variables.
-let rootDir = $APPDIR."/vim-config"
+let rootDir = $APPDIR."/.vim"
 let configDir = rootDir."/config"
 let plugDir = rootDir."/plug"
 let g:python3_host_prog = $APPDIR."/usr/bin/python3"
@@ -177,7 +177,7 @@ let g:UltiSnipsJumpForwardTrigger='<tab>'
 exec "let g:UltiSnipsSnippetDirectories = ['".configDir."/snippets']"
 let g:UltiSnipsEditSplit="vertical"
 
-Plug 'Clcanny/vim-formatter', { 'do': 'make check' }
+" Plug 'Clcanny/vim-formatter', { 'do': 'make check' }
 Plug 'junegunn/vim-easy-align'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'] }
@@ -188,7 +188,7 @@ call plug#end()
 " for vim-colors-solarized
 " colorscheme must be after plug#end()
 " Please uncomment it after install
-" colorscheme solarized
+colorscheme solarized
 
 exec "source ".configDir."/common.vim"
 exec "source ".configDir."/map.vim"

@@ -66,7 +66,7 @@ if has('persistent_undo')
   " turn on the feature
   set undofile
   " directory where the undo files will be stored
-  set undodir=/home/admin/demonsruan/Software/install/vim/undo
+  set undodir=/tmp/vim_undo
 endif
 
 " save more lines when copy paste between files
